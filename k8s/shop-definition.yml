@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: shop
+  name: shop
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: shop
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: shop
+    spec:
+      containers:
+      - image: shop
+        name: shop
+        imagePullPolicy: Never
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: default
+  name: shop-service
+spec:
+  type: NodePort
+  selector:
+    app: shop
+  ports:
+    - protocol: TCP
+      port: 3000

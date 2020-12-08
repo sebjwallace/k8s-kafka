@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: carrier
+  name: carrier
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: carrier
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: carrier
+    spec:
+      containers:
+      - image: carrier
+        name: carrier
+        imagePullPolicy: Never
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: carrier-service
+spec:
+  type: NodePort
+  selector:
+    app: carrier
+  ports:
+  - protocol: TCP
+    port: 3001
+    targetPort: 3001
+    nodePort: 30031
