@@ -1,24 +1,27 @@
 const express = require('express')
-const app = express()
-const port = 3000
 const { Kafka } = require('kafkajs')
 
-const topic = 'first'
+const app = express()
+const port = 3000
+const topic = 'test-topic'
 
 let connection = null
 let producer = null
-let consumer = null
+
+const serviceId = Math.floor(Math.random() * 10000)
 
 app.get('/send', async (req, res) => {
+
+	console.log('SENDING MESSAGE')
 
     await producer.send({
         topic,
         messages: [
             { value: req.query.message }
         ]
-    })
-
-	console.log('producer sent ' + req.query.message)
+	})
+	
+	console.log('producer sent ' + req.query.message, serviceId)
     res.send('sent ' + req.query.message)
 })
 
@@ -27,23 +30,11 @@ app.listen(port, async () => {
 
 	connection = new Kafka({
 		clientId: 'app',
-		brokers: ['kafka.kafka-ca1:9092']
+		brokers: ['kafka.default:9092']
 	})
 
 	producer = connection.producer({ acks: -1 }) // all replicas ack
 	await producer.connect()
-
-	consumer = connection.consumer({ groupId: 'test-group' })
-	await consumer.connect()
-	await consumer.subscribe({ topic })
-	await consumer.run({
-		eachMessage: async ({ topic, partition, message }) => {
-			console.log({
-				consumer: 2,
-				value: message.value.toString()
-			})
-		}
-	})
 	
-	console.log('kafka ready')
+	console.log('kafka ready', serviceId)
 })

@@ -6,7 +6,7 @@ metadata:
     app: shop
   name: shop
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: shop
@@ -21,6 +21,17 @@ spec:
       - image: shop
         name: shop
         imagePullPolicy: Never
+        env:
+        - name: POSTGRES_HOST
+          value: postgres
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_DATABASE
+          value: event_store
+        - name: POSTGRES_USER
+          value: user
+        - name: POSTGRES_PASSWORD
+          value: mysecretpassword
 status: {}
 
 ---
